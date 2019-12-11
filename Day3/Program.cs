@@ -19,8 +19,7 @@ namespace Day3
         private static int CalcShortestDistance(string[] wires)
         {
             List<Wire> allWires = new List<Wire>();
-
-            // go through all wires and add positions
+            
             for (int i = 0; i < wires.Length; i++)
             {
                 var currentWire = new Wire();
@@ -75,11 +74,18 @@ namespace Day3
 
             // find intersection points
 
+
             // calc closest intersection point
 
             return -1;
         }        
     }
+
+    // TODO:
+    //private static Position Intersect(Line a, Line b)
+    //{
+    //   https://stackoverflow.com/questions/20677795/how-do-i-compute-the-intersection-point-of-two-lines
+    //}
 
 
     public class Wire
