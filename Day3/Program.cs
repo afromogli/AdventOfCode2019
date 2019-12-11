@@ -23,54 +23,53 @@ namespace Day3
             // go through all wires and add positions
             for (int i = 0; i < wires.Length; i++)
             {
-                var wire = new Wire();
-                allWires.Add(wire);
-                string currentWire = wires[i];
+                var currentWire = new Wire();
+                string currentWireString = wires[i];
 
-                string[] moves = currentWire.Split(',');
+                string[] instruction = currentWireString.Split(',');
 
-                for (int j = 0; j < moves.Length; j++)
+                for (int j = 0; j < instruction.Length; j++)
                 {
-                    string currentMove = moves[j];
+                    var currentLine = new Line();
 
-                    char direction = currentMove[0];
-                    int steps = int.Parse(currentMove.Substring(1));
-
-                    var pos = new Position();
-
-                    if (wire.Positions.Count == 0)
+                    if (j == 0)
                     {
-                        // init first position
-                        if (i > 0 && allWires[i-1].Positions.Count > 0)
-                        {
-                            pos.X = allWires[i - 1].Positions[0].X;
-                            pos.Y = allWires[i - 1].Positions[0].Y;
-                        }
-                        // else 
-                        // default to 0, 0
+                        currentLine.Start = new Position();   
                     }
                     else
                     {
-                        pos.X = wire.Positions[j - 1].X;
-                        pos.Y = wire.Positions[j - 1].Y;
+                        currentLine.Start = new Position() { X = currentWire.Lines[j - 1].End.X, Y = currentWire.Lines[j - 1].End.Y };
                     }
-                    
+
+                    string currInstr = instruction[j];
+
+                    char direction = currInstr[0];
+                    int distance = int.Parse(currInstr.Substring(1));
+
+
+                    var endPosition = new Position();
                     switch (direction)
                     {
                         case 'R':
-
+                            endPosition.X = currentLine.Start.X + distance;
+                            endPosition.Y = currentLine.Start.Y;
                             break;
                         case 'U':
+                            endPosition.X = currentLine.Start.X;
+                            endPosition.Y = currentLine.Start.Y + distance;
                             break;
                         case 'D':
+                            endPosition.X = currentLine.Start.X;
+                            endPosition.Y = currentLine.Start.Y - distance;
                             break;
                         case 'L':
+                            endPosition.X = currentLine.Start.X - distance;
+                            endPosition.Y = currentLine.Start.Y;
                             break;
                     }
+                    currentLine.End = endPosition;
 
-                    wire.Positions.Add(pos);
-
-                    // TODO: fix..
+                    currentWire.Lines.Add(currentLine);
                 }
             }
 
@@ -87,10 +86,16 @@ namespace Day3
     {
         public Wire()
         {
-            Positions = new List<Position>();
+            Lines = new List<Line>();
         }
 
-        public List<Position> Positions { get; set; }
+        public List<Line> Lines;
+    }
+
+    public class Line
+    {
+        public Position Start { get; set; }
+        public Position End { get; set; }
     }
 
     public struct Position
