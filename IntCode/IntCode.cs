@@ -82,12 +82,7 @@ namespace IntCode
         // Day 5
         public static int CalcOpCodeV3(string input)
         {
-            // https://adventofcode.com/2019/day/5
-
-            //string[] tokens = input.Split(',');
             int[] values = input.Split(',').Select(s => int.Parse(s)).ToArray();
-            //values[1] = noun;
-            //values[2] = verb;
 
             int opStepSize = 4;
             for (int i = 0; i < values.Length; i += opStepSize)
@@ -122,14 +117,25 @@ namespace IntCode
                 }
                 else if (opCode == 3)
                 {
+                    int param1 = values[i + 1];
                     // Take input and store at address X
-                    values[i + 1] = int.Parse(Console.ReadLine());                    
+                    values[param1] = int.Parse(Console.ReadLine());                    
                     opStepSize = 2;
                 }
                 else if (opCode == 4)
                 {
-                    // Output value from address X
-                    Console.WriteLine(values[i + 1]);
+                    int param1 = values[i + 1];
+                    if (firstParamMode == 0)
+                    {
+                        // Output value from address X
+                        Console.WriteLine(values[param1]);
+                    }
+                    else
+                    {
+                        // Output value from address X
+                        Console.WriteLine(param1);
+                    }
+                    
                     opStepSize = 2;
                 }
                 else
