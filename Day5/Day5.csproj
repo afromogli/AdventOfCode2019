@@ -55,5 +55,10 @@
       <Name>IntCode</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="input1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
