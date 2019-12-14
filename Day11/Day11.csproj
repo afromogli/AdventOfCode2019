@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{11B8FE59-2584-41B6-9A3F-5D8A201EF025}</ProjectGuid>
+    <ProjectGuid>{D67A1A24-D044-49FB-8AD5-E2C48AB3B493}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Day2</RootNamespace>
-    <AssemblyName>Day2</AssemblyName>
+    <RootNamespace>Day11</RootNamespace>
+    <AssemblyName>Day11</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -43,22 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Day2.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="input1.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\IntCode\IntCode.csproj">
-      <Project>{7d32092c-902e-44f0-99d2-0326a7d65848}</Project>
-      <Name>IntCode</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
