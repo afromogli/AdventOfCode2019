@@ -24,6 +24,23 @@ namespace Day3
             Console.ReadKey();
         }
 
+        private static int FindIntersectionWithLeastAmountOfSteps(string[] wires)
+        {
+            List<Wire> allWires = GetWires(wires);
+            var intersectionPoints = FindIntersectionPoints(allWires);
+
+            var intersectionPointSteps = new int[intersectionPoints.Count];
+
+            for (int i = 0; i < intersectionPoints.Count; i++)
+            {
+                var currIntersectionPoint = intersectionPoints[i];
+            }
+
+            // TODO
+
+            return -1;
+        }
+
         private static int CalcShortestDistance(string[] wires)
         {
             List<Wire> allWires = GetWires(wires);
