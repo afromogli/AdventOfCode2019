@@ -14,12 +14,12 @@ namespace Day3
             var test2 = new string[2] { "R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51", "U98,R91,D20,R16,D67,R40,U7,R15,U6,R7" };
 
             // Part 1
-            Console.WriteLine(CalcShortestDistance(test1));
-            Console.WriteLine(CalcShortestDistance(test2));
-            Console.WriteLine(CalcShortestDistance(input1));
+            //Console.WriteLine(CalcShortestDistance(test1));
+            //Console.WriteLine(CalcShortestDistance(test2));
+            //Console.WriteLine(CalcShortestDistance(input1));
 
             // Part 2
-            // TODO: find intersection with least amount of steps for both wires
+            Console.WriteLine(FindIntersectionWithLeastAmountOfSteps(test1));
 
             Console.ReadKey();
         }
@@ -27,24 +27,57 @@ namespace Day3
         private static int FindIntersectionWithLeastAmountOfSteps(string[] wires)
         {
             List<Wire> allWires = GetWires(wires);
-            var intersectionPoints = FindIntersectionPoints(allWires);
+            var intersectionPoints = FindIntersections(allWires);
 
-            var intersectionPointSteps = new int[intersectionPoints.Count];
+            var leastAmountOfSteps = int.MaxValue;
 
             for (int i = 0; i < intersectionPoints.Count; i++)
             {
-                var currIntersectionPoint = intersectionPoints[i];
+                var currIntersec = intersectionPoints[i];
+
+                int wire1Steps = 0;
+                int wire2Steps = 0;
+                for (int j = currIntersec.Line1Index; j >= 0; j--)
+                {
+                    var currLine = currIntersec.Wire1.Lines[j];
+                    if (j == currIntersec.Line1Index)
+                    {
+                        wire1Steps += (currIntersec.Point.X - currLine.Start.X) + (currIntersec.Point.Y - currLine.Start.Y); 
+                    }
+                    else
+                    {
+                        wire1Steps += (currLine.End.X - currLine.Start.X) + (currLine.End.Y - currLine.Start.Y);
+                    }
+                }
+
+                for (int j = currIntersec.Line2Index; j >= 0; j--)
+                {
+                    var currLine = currIntersec.Wire2.Lines[j];
+                    if (j == currIntersec.Line2Index)
+                    {
+                        wire2Steps += (currIntersec.Point.X - currLine.Start.X) + (currIntersec.Point.Y - currLine.Start.Y);
+                    }
+                    else
+                    {
+                        wire2Steps += (currLine.End.X - currLine.Start.X) + (currLine.End.Y - currLine.Start.Y);
+                    }
+                }
+
+                int sum = wire1Steps + wire2Steps;
+
+                if (sum < leastAmountOfSteps)
+                {
+                    leastAmountOfSteps = sum;
+                }
             }
 
-            // TODO
-
-            return -1;
+            return leastAmountOfSteps;
         }
 
         private static int CalcShortestDistance(string[] wires)
         {
             List<Wire> allWires = GetWires(wires);
-            var intersectionPoints = FindIntersectionPoints(allWires);
+            var intersectionPoints = FindIntersections(allWires);
 
             // calc closest intersection point
             var shortestDistance = int.MaxValue;
@@ -52,7 +85,7 @@ namespace Day3
             {
                 var currIntersectionPoint = intersectionPoints[i];
 
-                var distance = Math.Abs(currIntersectionPoint.X) + Math.Abs(currIntersectionPoint.Y);
+                var distance = Math.Abs(currIntersectionPoint.Point.X) + Math.Abs(currIntersectionPoint.Point.Y);
 
                 if (distance < shortestDistance)
                 {
@@ -63,14 +96,13 @@ namespace Day3
             return shortestDistance;
         }
 
-        private static List<Position> FindIntersectionPoints(List<Wire> allWires)
+        private static List<Intersection> FindIntersections(List<Wire> allWires)
         {
-            List<Position> intersectionPoints = new List<Position>();
+            List<Intersection> intersections = new List<Intersection>();
             // find intersection points
             for (int i = 0; i < allWires.Count; i++)
             {
                 var currWire = allWires[i];
-
 
                 for (int j = 0; j < currWire.Lines.Count; j++)
                 {
@@ -96,13 +128,21 @@ namespace Day3
 
                             if (intersectionPoint != null)
                             {
-                                intersectionPoints.Add(intersectionPoint);
+                                Intersection intersection = new Intersection()
+                                {
+                                    Point = intersectionPoint,
+                                    Line1Index = j,
+                                    Line2Index = l,
+                                    Wire1 = currWire,
+                                    Wire2 = otherWire
+                                };
+                                intersections.Add(intersection);
                             }
                         }
                     }
                 }
             }
-            return intersectionPoints;
+            return intersections;
         }
 
         private static List<Wire> GetWires(string[] wires)
