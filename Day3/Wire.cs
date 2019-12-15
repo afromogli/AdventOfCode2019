@@ -6,9 +6,9 @@ namespace Day3
     {
         public Wire()
         {
-            Lines = new List<Line>();
+            Points = new List<Position>();
         }
 
-        public List<Line> Lines;
+        public List<Position> Points;
     }
 }

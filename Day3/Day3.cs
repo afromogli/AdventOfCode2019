@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Day3
 {
@@ -14,12 +15,12 @@ namespace Day3
             var test2 = new string[2] { "R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51", "U98,R91,D20,R16,D67,R40,U7,R15,U6,R7" };
 
             // Part 1
-            //Console.WriteLine(CalcShortestDistance(test1));
-            //Console.WriteLine(CalcShortestDistance(test2));
-            //Console.WriteLine(CalcShortestDistance(input1));
+            Console.WriteLine(CalcShortestDistance(test1));
+            Console.WriteLine(CalcShortestDistance(test2));
+            Console.WriteLine(CalcShortestDistance(input1));
 
             // Part 2
-            Console.WriteLine(FindIntersectionWithLeastAmountOfSteps(test1));
+            //Console.WriteLine(FindIntersectionWithLeastAmountOfSteps(test1));
 
             Console.ReadKey();
         }
@@ -30,46 +31,6 @@ namespace Day3
             var intersectionPoints = FindIntersections(allWires);
 
             var leastAmountOfSteps = int.MaxValue;
-
-            for (int i = 0; i < intersectionPoints.Count; i++)
-            {
-                var currIntersec = intersectionPoints[i];
-
-                int wire1Steps = 0;
-                int wire2Steps = 0;
-                for (int j = currIntersec.Line1Index; j >= 0; j--)
-                {
-                    var currLine = currIntersec.Wire1.Lines[j];
-                    if (j == currIntersec.Line1Index)
-                    {
-                        wire1Steps += (currIntersec.Point.X - currLine.Start.X) + (currIntersec.Point.Y - currLine.Start.Y); 
-                    }
-                    else
-                    {
-                        wire1Steps += (currLine.End.X - currLine.Start.X) + (currLine.End.Y - currLine.Start.Y);
-                    }
-                }
-
-                for (int j = currIntersec.Line2Index; j >= 0; j--)
-                {
-                    var currLine = currIntersec.Wire2.Lines[j];
-                    if (j == currIntersec.Line2Index)
-                    {
-                        wire2Steps += (currIntersec.Point.X - currLine.Start.X) + (currIntersec.Point.Y - currLine.Start.Y);
-                    }
-                    else
-                    {
-                        wire2Steps += (currLine.End.X - currLine.Start.X) + (currLine.End.Y - currLine.Start.Y);
-                    }
-                }
-
-                int sum = wire1Steps + wire2Steps;
-
-                if (sum < leastAmountOfSteps)
-                {
-                    leastAmountOfSteps = sum;
-                }
-            }
 
             return leastAmountOfSteps;
         }
@@ -104,41 +65,31 @@ namespace Day3
             {
                 var currWire = allWires[i];
 
-                for (int j = 0; j < currWire.Lines.Count; j++)
+                for (int j = 0; j < allWires.Count; j++)
                 {
-                    var currLine = currWire.Lines[j];
-                    for (int k = 0; k < allWires.Count; k++)
+                    if (i == j)
                     {
-                        if (i == k)
+                        continue;
+                    }
+                    var otherWire = allWires[j];
+
+                    var intersectionPoints = currWire.Points.Intersect(otherWire.Points, new PositionComparer()).ToArray();
+
+                    for (int k = 0; k < intersectionPoints.Length; k++)
+                    {
+                        var intersectionPoint = intersectionPoints[k];
+                        if ( intersectionPoint.X == 0 && intersectionPoint.Y == 0)
                         {
                             continue;
                         }
-                        var otherWire = allWires[k];
-
-                        for (int l = 0; l < otherWire.Lines.Count; l++)
+                        Intersection intersection = new Intersection()
                         {
-                            var otherLine = otherWire.Lines[l];
-
-                            var intersectionPoint = Line.Intersect(currLine, otherLine);
-
-                            if (intersectionPoint != null && intersectionPoint.X == 0 && intersectionPoint.Y == 0)
-                            {
-                                continue;
-                            }
-
-                            if (intersectionPoint != null)
-                            {
-                                Intersection intersection = new Intersection()
-                                {
-                                    Point = intersectionPoint,
-                                    Line1Index = j,
-                                    Line2Index = l,
-                                    Wire1 = currWire,
-                                    Wire2 = otherWire
-                                };
-                                intersections.Add(intersection);
-                            }
-                        }
+                            Point = intersectionPoint,
+                            Wire1 = currWire,
+                            Wire2 = otherWire
+                        };
+                        intersections.Add(intersection);
+                        
                     }
                 }
             }
@@ -155,49 +106,35 @@ namespace Day3
 
                 string[] instruction = currentWireString.Split(',');
 
+                currentWire.Points.Add(new Position(0, 0));
+
+                var currentPos = new Position(0, 0);
                 for (int j = 0; j < instruction.Length; j++)
                 {
-                    var currentLine = new Line();
-
-                    if (j == 0)
-                    {
-                        currentLine.Start = new Position();
-                    }
-                    else
-                    {
-                        currentLine.Start = new Position() { X = currentWire.Lines[j - 1].End.X, Y = currentWire.Lines[j - 1].End.Y };
-                    }
-
                     string currInstr = instruction[j];
 
                     char direction = currInstr[0];
-                    string distString = currInstr.Substring(1);
-                    int distance = int.Parse(distString);
+                    int distance = int.Parse(currInstr.Substring(1));
 
-
-                    var endPosition = new Position();
-                    switch (direction)
+                    for (int k = 0; k < distance; k++)
                     {
-                        case 'R':
-                            endPosition.X = currentLine.Start.X + distance;
-                            endPosition.Y = currentLine.Start.Y;
-                            break;
-                        case 'U':
-                            endPosition.X = currentLine.Start.X;
-                            endPosition.Y = currentLine.Start.Y + distance;
-                            break;
-                        case 'D':
-                            endPosition.X = currentLine.Start.X;
-                            endPosition.Y = currentLine.Start.Y - distance;
-                            break;
-                        case 'L':
-                            endPosition.X = currentLine.Start.X - distance;
-                            endPosition.Y = currentLine.Start.Y;
-                            break;
+                        switch (direction)
+                        {
+                            case 'R':
+                                currentPos.X++;
+                                break;
+                            case 'U':
+                                currentPos.Y++;
+                                break;
+                            case 'D':
+                                currentPos.Y--;
+                                break;
+                            case 'L':
+                                currentPos.X--;
+                                break;
+                        }
+                        currentWire.Points.Add(new Position(currentPos.X, currentPos.Y));
                     }
-                    currentLine.End = endPosition;
-
-                    currentWire.Lines.Add(currentLine);
                 }
 
                 allWires.Add(currentWire);
@@ -205,6 +142,6 @@ namespace Day3
             return allWires;
         }
 
-        
+
     }
 }
