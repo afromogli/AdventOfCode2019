@@ -98,55 +98,75 @@ namespace IntCode
                     break;
                 }
 
-                // plus and multiplication
-                if (opCode == 1 || opCode == 2)
+                switch (opCode)
                 {
-                    int param1 = values[i + 1];
-                    int param2 = values[i + 2];
-                    int resultPos = values[i + 3];
+                    case 1:
+                    case 2:
+                        {
+                            int param1 = values[i + 1];
+                            int param2 = values[i + 2];
+                            int resultPos = values[i + 3];
 
-                    if (opCode == 1)
-                    {
-                        values[resultPos] = (firstParamMode == 0 ? values[param1] : param1)  + (secondParamMode == 0 ? values[param2] : param2);
-                    }
-                    else
-                    {
-                        values[resultPos] = (firstParamMode == 0 ? values[param1] : param1) * (secondParamMode == 0 ? values[param2] : param2);
-                    }
-                    opStepSize = 4;
-                }
-                else if (opCode == 3)
-                {
-                    int param1 = values[i + 1];
-                    // Take input and store at address X
-                    values[param1] = int.Parse(Console.ReadLine());                    
-                    opStepSize = 2;
-                }
-                else if (opCode == 4)
-                {
-                    int param1 = values[i + 1];
-                    if (firstParamMode == 0)
-                    {
-                        // Output value from address X
-                        Console.WriteLine(values[param1]);
-                    }
-                    else
-                    {
-                        // Output value from address X
-                        Console.WriteLine(param1);
-                    }
-                    
-                    opStepSize = 2;
-                }
-                else
-                {
-                    Console.WriteLine($"Unkown opcode detected: {opCode}, aborting..");
-                    break;
+                            int res;
+                            int param1Val = (firstParamMode == 0 ? values[param1] : param1);
+                            int param2Val = (secondParamMode == 0 ? values[param2] : param2);
+
+                            if (opCode == 1)
+                            {
+                                res = param1Val + param2Val;
+                            }
+                            else
+                            {
+                                res = param1Val * param2Val;
+
+                            }
+                            SetMem(values, resultPos, res);
+                            opStepSize = 4;
+                            break;
+                        }
+
+                    // Take input and store at address 
+                    case 3:
+                        {
+                            int address = values[i + 1];
+                            
+                            int inputVal = int.Parse(Console.ReadLine());
+                            SetMem(values, address, inputVal);
+                            opStepSize = 2;
+                            break;
+                        }
+                    // Output value stored at address
+                    case 4:
+                        {
+                            int param1 = values[i + 1];
+                            if (firstParamMode == 0)
+                            {
+                                // Output value from address X
+                                Console.WriteLine(values[param1]);
+                            }
+                            else
+                            {
+                                // Output value
+                                Console.WriteLine(param1);
+                            }
+
+                            opStepSize = 2;
+                            break;
+                        }
+                    default:
+                        Console.WriteLine($"Unkown opcode detected: {opCode}, aborting..");
+                        break;
                 }
 
             }
 
             return values[0];
         }
+
+        private static void SetMem(int[] mem, int address, int value)
+        {
+            mem[address] = value;
+        }
+
     }
 }
