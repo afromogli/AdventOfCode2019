@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Day3
+﻿namespace Day3
 {
     public class Position
     {
@@ -18,24 +16,21 @@ namespace Day3
             return $"X:{X}, Y:{Y}";
         }
 
-       
-    }
-
-    public class PositionComparer : IEqualityComparer<Position>
-    {
-        public bool Equals(Position item1, Position item2)
+        public override bool Equals(object obj)
         {
-            if (object.ReferenceEquals(item1, item2))
+            if (object.ReferenceEquals(this, obj))
                 return true;
-            if (item1 == null || item2 == null)
+            if (obj == null)
                 return false;
-            return item1.X.Equals(item2.X) &&
-                   item1.Y.Equals(item2.Y);
+
+            var pos = (Position)obj;
+            return X.Equals(pos.X) &&
+                   Y.Equals(pos.Y);
         }
 
-        public int GetHashCode(Position item)
+        public override int GetHashCode()
         {
-            return new { item.X, item.Y }.GetHashCode();
+            return new { X, Y }.GetHashCode();
         }
     }
 }

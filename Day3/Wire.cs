@@ -10,5 +10,10 @@ namespace Day3
         }
 
         public List<Position> Points;
+
+        public override string ToString()
+        {
+            return $"Points size:{Points.Count}";
+        }
     }
 }

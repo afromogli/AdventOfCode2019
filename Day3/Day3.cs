@@ -19,8 +19,10 @@ namespace Day3
             Console.WriteLine(CalcShortestDistance(test2));
             Console.WriteLine(CalcShortestDistance(input1));
 
+            Console.WriteLine("Part 2:");
+
             // Part 2
-            //Console.WriteLine(FindIntersectionWithLeastAmountOfSteps(test1));
+            Console.WriteLine(FindIntersectionWithLeastAmountOfSteps(input1));
 
             Console.ReadKey();
         }
@@ -29,8 +31,23 @@ namespace Day3
         {
             List<Wire> allWires = GetWires(wires);
             var intersectionPoints = FindIntersections(allWires);
-
+            
             var leastAmountOfSteps = int.MaxValue;
+
+            for (int i = 0; i < intersectionPoints.Count; i++)
+            {
+                var currIntersectionPoint = intersectionPoints[i];
+
+                var targetPoint = currIntersectionPoint.Point;
+
+                var stepsToTarget1 = currIntersectionPoint.Wire1.Points.IndexOf(targetPoint);
+                var stepsToTarget2 = currIntersectionPoint.Wire2.Points.IndexOf(targetPoint);
+
+                if (stepsToTarget1 + stepsToTarget2 < leastAmountOfSteps)
+                {
+                    leastAmountOfSteps = stepsToTarget1 + stepsToTarget2;
+                }
+            }
 
             return leastAmountOfSteps;
         }
@@ -73,7 +90,7 @@ namespace Day3
                     }
                     var otherWire = allWires[j];
 
-                    var intersectionPoints = currWire.Points.Intersect(otherWire.Points, new PositionComparer()).ToArray();
+                    var intersectionPoints = currWire.Points.Intersect(otherWire.Points).ToArray();
 
                     for (int k = 0; k < intersectionPoints.Length; k++)
                     {
